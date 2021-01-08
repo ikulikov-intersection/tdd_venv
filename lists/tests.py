@@ -46,7 +46,7 @@ class HomePageTest(TestCase):
         self.assertEqual(new_item.text, 'A new list item')
 
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['location'], '/')
+        self.assertEqual(response['location'], '/lists/the-only-list-in-the-world')
 
     def test_sving_and_reartieving_items(self):
         first_item=Item()

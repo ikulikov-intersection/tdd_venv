@@ -1,11 +1,11 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-import unittest
 import time
+from django.test import LiveServerTestCase
 
 
 
-class NewVisitorTest(unittest.TestCase):
+class NewVisitorTest(LiveServerTestCase):
 
     def setUp(self):
         self.browser=webdriver.Opera()
@@ -22,7 +22,7 @@ class NewVisitorTest(unittest.TestCase):
 
 
         #Edith has heard about a cool new online to-do app. She goes to check out its page
-        self.browser.get('http://localhost:8585')
+        self.browser.get(self.live_server_url)
 
         #She notices the page title and header mention to-do lists
         self.assertIn('To-Do', self.browser.title)
@@ -43,6 +43,8 @@ class NewVisitorTest(unittest.TestCase):
     #"1: Buy peacock feathers" as an iem in to-do list
 
         input_box.send_keys(Keys.ENTER)
+        edith_list_url = self.browser.current_url
+        self.assertRegex(edith_list_url, '/lists/.+')
         self.check_for_row_in_list_table('1: Buy peacock feathers')
 
     #There is still a text box inviting her to add another item. She enters
@@ -54,6 +56,7 @@ class NewVisitorTest(unittest.TestCase):
     #The page updates again, and now shows both items on her list
         self.check_for_row_in_list_table('1: Buy peacock feathers')
         self.check_for_row_in_list_table('2: Use peacock feathers to make a fly')
+    """    
     #Edith wonders whether the site will remember her list. Then she sees
     #that the site has generated o unique URL for her -- there is some 
     #explanatory text to that effect.
@@ -63,6 +66,40 @@ class NewVisitorTest(unittest.TestCase):
     #Satisfied, she goes back to sleep
 
         self.fail('Finish the test!')
-if __name__ == '__main__':
-    unittest.main(warnings='ignore')
+    """
+    #Now a new user, Francis, comes along to the site.
 
+    #We use a new browser session to make sure that no information
+    ##of Edith's is coming through from cookies etc#
+
+    self.browser.quit()
+    self.browser = webdriver.Opera()
+
+    #Francis visit the home page. Ther is no sign of Edith's list
+
+    self.browser.get(self.live_server_url)
+    page_text = self.browser.find_element_by_tag_name('body').text
+
+    self.assertNotIn('Buy peacock feathers', page_text)
+    self.assertNotIn('make a fly', page_text)
+
+    #Francis starts a new list by entering a new item. He
+    #is less interesting than Edith...
+
+    input_box=self.browser.find_element_by_id('id_new_item')
+    input_box.send_keys('Buy milk')
+    input_box.send_keys(Keys.ENTER)
+
+
+    #Francis gets his own unique URL
+
+    francis_list_url = self.browser.current_url
+    self.assertRegex(francis_list_url, 'lists/.+')
+    self.assertIn('Buy milk', page_text)
+
+    #Satisfied, thay both go back to sleep
+
+    
+
+
+    self.find_element_by_tag_name('body').text
