@@ -79,12 +79,7 @@ class HomePageTest(TestCase):
         request = HttpRequest()
         home_page(request)
         self.assertEqual(Item.objects.count(), 0)
-    def test_home_page_can_display_al_list_item(self):
-        Item.objects.create(text='item 1')
-        Item.objects.create(text='item 2')
-
-        request = HttpRequest()
-        response = home_page(request)
-        self.assertIn('item 1', response.content.decode())
-        self.assertIn('item 2', response.content.decode())
         
+    def test_user_list_template(self):
+        response = self.client.get('/lists/the-only-list-in-the-world/')
+        self.assertTemplateUsed(response, 'list.html')

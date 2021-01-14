@@ -56,50 +56,56 @@ class NewVisitorTest(LiveServerTestCase):
     #The page updates again, and now shows both items on her list
         self.check_for_row_in_list_table('1: Buy peacock feathers')
         self.check_for_row_in_list_table('2: Use peacock feathers to make a fly')
-    """    
-    #Edith wonders whether the site will remember her list. Then she sees
-    #that the site has generated o unique URL for her -- there is some 
-    #explanatory text to that effect.
-
-    #She visits that URL - her to-do list is still there.
-
-    #Satisfied, she goes back to sleep
-
-        self.fail('Finish the test!')
-    """
-    #Now a new user, Francis, comes along to the site.
-
-    #We use a new browser session to make sure that no information
-    ##of Edith's is coming through from cookies etc#
-
-    self.browser.quit()
-    self.browser = webdriver.Opera()
-
-    #Francis visit the home page. Ther is no sign of Edith's list
-
-    self.browser.get(self.live_server_url)
-    page_text = self.browser.find_element_by_tag_name('body').text
-
-    self.assertNotIn('Buy peacock feathers', page_text)
-    self.assertNotIn('make a fly', page_text)
-
-    #Francis starts a new list by entering a new item. He
-    #is less interesting than Edith...
-
-    input_box=self.browser.find_element_by_id('id_new_item')
-    input_box.send_keys('Buy milk')
-    input_box.send_keys(Keys.ENTER)
-
-
-    #Francis gets his own unique URL
-
-    francis_list_url = self.browser.current_url
-    self.assertRegex(francis_list_url, 'lists/.+')
-    self.assertIn('Buy milk', page_text)
-
-    #Satisfied, thay both go back to sleep
-
+        """    
+        #Edith wonders whether the site will remember her list. Then she sees
+        #that the site has generated o unique URL for her -- there is some 
+        #explanatory text to that effect.
     
+        #She visits that URL - her to-do list is still there.
+    
+        #Satisfied, she goes back to sleep
+    
+            self.fail('Finish the test!')
+        """
+        #Now a new user, Francis, comes along to the site.
+    
+        #We use a new browser session to make sure that no information
+        ##of Edith's is coming through from cookies etc#
+    
+        self.browser.quit()
+        self.browser = webdriver.Opera()
+    
+        #Francis visit the home page. Ther is no sign of Edith's list
+    
+        self.browser.get(self.live_server_url)
+        page_text = self.browser.find_element_by_tag_name('body').text
+    
+        self.assertNotIn('Buy peacock feathers', page_text)
+        self.assertNotIn('make a fly', page_text)
+    
+        #Francis starts a new list by entering a new item. He
+        #is less interesting than Edith...
+    
+        input_box=self.browser.find_element_by_id('id_new_item')
+        input_box.send_keys('Buy milk')
+        input_box.send_keys(Keys.ENTER)
+    
+    
+        #Francis gets his own unique URL
+    
+        francis_list_url = self.browser.current_url
+        self.assertRegex(francis_list_url, 'lists/.+')
+        self.assertNotEqual(francis_list_url, edith_list_url)
 
 
-    self.find_element_by_tag_name('body').text
+        #Again, there is no trace of Edith's list
+        page_text = self.browser.find_element_by_tag_name('body').text
+        self.assertNotIn('Buy peacock feathers', page_text)
+        self.assertIn('Buy milk', page_text)
+    
+        #Satisfied, thay both go back to sleep
+    
+        
+    
+    
+        self.find_element_by_tag_name('body').text
